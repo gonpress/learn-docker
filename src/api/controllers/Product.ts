@@ -21,8 +21,17 @@ const create = async (req: Request, res: Response) => {
 }
 
 const list = async(req: Request, res: Response) => {
+    const keyword = req.query.keyword
+        ? {
+            name:{
+                $regex: req.query.keyword,
+                $options: 'i',
+            }
+        } : {};
 
-    const products = await getProducts();
+    const page = Number(req.query.pageNumber) || 1;
+
+    const products = await getProducts(keyword, page);
 
     return res.json({
         result:'success',

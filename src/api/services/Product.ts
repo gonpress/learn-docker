@@ -22,10 +22,20 @@ const createProduct = async ({
     return newProduct;
 }
 
-const getProducts = async() => {
-    const products = await ProductModel.find();
+const getProducts = async(keyword: {}, page: number) => {
+    const pageSize = 2;
 
-    return products;
+    const count = await ProductModel.countDocuments({...keyword})
+    const products = await ProductModel.find({...keyword})
+        .limit(pageSize)
+        .skip(pageSize * (page - 1))
+
+    return {
+        count,
+        page,
+        pages: Math.ceil(count / pageSize),
+        products
+    };
 }
 
 export { createProduct, getProducts }
