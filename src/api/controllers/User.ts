@@ -1,31 +1,31 @@
 import { Request, Response } from 'express';
-import asyncHandler from "express-async-handler";
-import UserModel from "../models/UserModel";
-
+import {createNewUser, loginUser} from "../services/User";
 
 // 회원가입
-const signUp = asyncHandler( async(req: Request, res: Response) => {
-    const { name, email, password } = req.body;
-
-    const user = await UserModel.findOne({email});
-
-    if(user) {
-        res.status(412).json({
-            message:'이미 가입된 이메일 입니다',
-        })
-    }
-
-    const newUser = await UserModel.create({
+const signUp = async (req: Request, res: Response) => {
+    const {email, name, password} = req.body;
+    const newUserCreated = await createNewUser({
         name,
         email,
         password
     })
 
-    res.json(newUser);
-})
+    if(newUserCreated)
+
+    return res.json({
+        result:'success',
+        user:newUserCreated
+    })
+}
 
 // 로그인
+const login = async(req:Request, res:Response) => {
+    const { email, password } = req.body;
 
+    const loggedUser = await loginUser({email, password});
+
+    res.json(loggedUser);
+}
 //
 
-export {signUp}
+export {signUp, login}
