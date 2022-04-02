@@ -10,8 +10,6 @@ const signUp = async (req: Request, res: Response) => {
         password
     })
 
-    if(newUserCreated)
-
     return res.json({
         result:'success',
         user:newUserCreated
